@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+@{
+    if (ViewBag.Success != null)
+    {
+        <p class="alert-success">@(ViewBag.Success)</p>
+    }
+    else if (ViewBag.Error != null)
+    {
+        <p class="alert-danger">@(ViewBag.Error)</p>
+    }
+}
+
+<form action="/Book/Create" method="get">
+    <div>
+        <label for="id">ID</label>
+        <input type="text" id="id" name="id" value="@(ViewBag.ID)" />
+    </div>
+    <div>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value="@(ViewBag.BookTitle)" />
+    </div>
+    <div>
+        <label for="author">Author</label>
+        <input type="text" id="author" name="author" value="@(ViewBag.Author)" />
+    </div>
+    <div>
+        <label for="publicationDate">Publication Date</label>
+        <input type="text" id="publicationDate" name="publicationDate" value="@(ViewBag.PublicationDate)" />
+    </div>
+    <div>
+        <label for="checkedOutDate">Checked Out Date</label>
+        <input type="text" id="checkedOutDate" name="checkedOutDate" value="@(ViewBag.CheckedOutDate)" />
+    </div>
+    <button type="submit">Go!</button>
+</form>
+<!-- // Code borowed: https://github.com/TECHCareers-by-Manpower/4.1-MVC/tree/master/MVC_4Point1 -->
+<!-- //https://github.com/TECHCareers-by-Manpower/4.1-MVC/blob/Sep21Practice/MVC_4Point1/Views/Book/Create.cshtml-->

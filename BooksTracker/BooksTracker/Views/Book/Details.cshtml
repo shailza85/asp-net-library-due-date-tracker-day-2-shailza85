@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Details";
+    string dueDateTense = ViewBag.Book == null ? "" : ViewBag.Book.DueDate > DateTime.Now.Date ? "is" : "was";
+}
+
+
+
+@{
+    if (ViewBag.Error != null)
+    {
+        <h1>Details</h1>
+        <p class="alert-danger">No book was selected.</p>
+    }
+    else
+    {
+        <h1>Details - @(ViewBag.Book.ID)</h1>
+        <p>@($"You checked out {ViewBag.Book.Title} on {ViewBag.Book.CheckedOutDate.ToLongDateString()}, and it {dueDateTense} due on {ViewBag.Book.DueDate.ToLongDateString()}.")</p>
+
+        <section>
+            <h2>Book Details</h2>
+            <p>Title: @(ViewBag.Book.Title)</p>
+            <p>Author: @(ViewBag.Book.Author)</p>
+            <p>Publication Date: @(ViewBag.Book.PublicationDate.ToLongDateString())</p>
+        </section>
+        <section>
+            <h2>Library Details</h2>
+            <p>Checked Out Date: @(ViewBag.Book.CheckedOutDate.ToLongDateString())</p>
+            <p>Due Date: @(ViewBag.Book.DueDate.ToLongDateString())</p>
+            <p>Checked Out Date: @(ViewBag.Book.ReturnedDate == null?"Not Returned":((DateTime)ViewBag.Book.ReturnedDate).ToLongDateString())</p>
+        </section>
+
+        <a class="btn btn-primary" href="/Book/Details?id=@(ViewBag.Book.ID)&extend=true">Extend Deadline of @(ViewBag.Book.ID) - @(ViewBag.Book.Title)</a>
+        <a class="btn btn-danger" href="/Book/Details?id=@(ViewBag.Book.ID)&delete=true">Delete @(ViewBag.Book.ID) - @(ViewBag.Book.Title)</a>
+    }
+}
+
+<!-- // Code borowed: https://github.com/TECHCareers-by-Manpower/4.1-MVC/tree/master/MVC_4Point1 -->
