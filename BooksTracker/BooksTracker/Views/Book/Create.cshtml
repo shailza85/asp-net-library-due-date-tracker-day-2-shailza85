@@ -24,8 +24,13 @@
         <input type="text" id="title" name="title" value="@(ViewBag.BookTitle)" />
     </div>
     <div>
-        <label for="author">Author</label>
-        <input type="text" id="author" name="author" value="@(ViewBag.Author)" />
+        <label for="AuthorIdID">Author</label>
+        <select name="AuthorID" id="AuthorID">
+            @foreach (Author author in ViewBag.Author)
+            {
+                <option value="@(author.ID)">@(author.Name)</option>
+            }
+        </select>
     </div>
     <div>
         <label for="publicationDate">Publication Date</label>
@@ -35,7 +40,7 @@
         <label for="checkedOutDate">Checked Out Date</label>
         <input type="text" id="checkedOutDate" name="checkedOutDate" value="@(ViewBag.CheckedOutDate)" />
     </div>
+    
     <button type="submit">Go!</button>
 </form>
 <!-- // Code borowed: https://github.com/TECHCareers-by-Manpower/4.1-MVC/tree/master/MVC_4Point1 -->
-<!-- //https://github.com/TECHCareers-by-Manpower/4.1-MVC/blob/Sep21Practice/MVC_4Point1/Views/Book/Create.cshtml-->

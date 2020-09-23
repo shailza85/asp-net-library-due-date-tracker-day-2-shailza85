@@ -29,6 +29,12 @@
             <p>Checked Out Date: @(ViewBag.Book.ReturnedDate == null?"Not Returned":((DateTime)ViewBag.Book.ReturnedDate).ToLongDateString())</p>
         </section>
 
+        <section>
+            <h2>Authors Details:</h2>
+            <p>AuthorID : @(ViewBag.Author.ID)</p>
+            <p>Author Name: @(ViewBag.Author.Name)</p>
+        </section>
+
         <a class="btn btn-primary" href="/Book/Details?id=@(ViewBag.Book.ID)&extend=true">Extend Deadline of @(ViewBag.Book.ID) - @(ViewBag.Book.Title)</a>
         <a class="btn btn-danger" href="/Book/Details?id=@(ViewBag.Book.ID)&delete=true">Delete @(ViewBag.Book.ID) - @(ViewBag.Book.Title)</a>
     }
