@@ -12,38 +12,20 @@ namespace BooksTracker.Controllers
 {
     public class BookController : Controller
     {
-        /*
-         BookController : Controller class:
-            Action/View “Create”
-                Will display the form to create an object. 
-                If the appropriate parameters are supplied in the query, attempt creation of the “Book” and add it to the list.
-                If the ID is already in the list, throw an exception.
-                Success message: "You have successfully checked out {title} until {DueDate}."
-                Error Message: “Unable to check out book: {Exception.Message}.”
-            Action/View “List”
-                Render a list of all books as links that will load the “Details” Action/View.
-            Action/View “Details”
-                If no get parameter “id” was supplied, render “No book selected.”
-                If an “id” get parameter was supplied, use GetBookByID() and render:
-                "You checked out {title} on {CheckedOutDate}, and it {is/was} due on {DueDate}."
-                Use conditional rendering to make a choice about using ‘is’ or ‘was’ based on today’s date.
-                A button that will call ExtendDueDateForBookByID().
-                A button that will call DeleteBookByID().
-            Method “CreateBook()”.
-                Accepts the same parameters as the “Book” constructor.
-                Creates and adds a “Book” to the “Books” list.
-                Ensures the provided ID is unique in the list.
-                Throw an exception if the ID already exists.
-            Method “GetBookByID()”.
-                Returns the book with the given ID from the “Books” list.
-            Method “ExtendDueDateForBookByID()”.
-                Extensions are 7 days from the current date (7 days from when the user requests the extension, not 7 days past the “DueDate”).
-            Method “DeleteBookByID()”.
-                Removes the book with the given ID from the “Books” list.
-            A public static “Books” property which is a list of “Book” objects.
-                This will be replaced by a proper database on {Day 2 assignment title}.
+        /*BookController (Controller) class modified:
+            Remove the “Books” property (static list of Books).
+            Modify “ExtendDueDateForBookByID()” to update a book in the database using Entity Framework.
+            Modify “DeleteBookByID()” to delete a book from the database using Entity Framework.
+            Add a “GetBooks()” method to get a list of all books in the database using Entity Framework.
+            Ensure that the “Author” virtual property is populated before the list is returned (for use on the List view).
+            Modify “GetBookByID()” to get a specific book from the database.
+            Ensure that the “Author” virtual property is populated before the object is returned (for use on the Details view).
+            Modify “CreateBook()” to save books to a database using Entity Framework.
+            Have “CreateBook()” perform the nulling of “ReturnDate”.
+            Have “CreateBook()” perform the setting of “DueDate”.
+
             */
-      /*  static public List<Book> Books { get; set; } = new List<Book>();
+        static public List<Book> Books { get; set; } = new List<Book>();
 
         public IActionResult Index()
         {
@@ -128,7 +110,7 @@ namespace BooksTracker.Controllers
             Ensures the provided ID is unique in the list.
             Throw an exception if the ID already exists.
             */
-         /*   if (Books.Where(x => x.ID == id).Count() > 0)
+        if (Books.Where(x => x.ID == id).Count() > 0)
             {
                 throw new Exception("That ID already exists.");
             }
@@ -151,7 +133,7 @@ namespace BooksTracker.Controllers
         {
             // Removes the book with the given ID from the “Books” list.
             Books.Remove(Books.Where(x => x.ID == id).Single());
-        }*/
+        }
     }
 }
 

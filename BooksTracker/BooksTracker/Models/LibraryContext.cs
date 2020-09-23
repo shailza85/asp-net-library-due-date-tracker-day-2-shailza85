@@ -31,6 +31,8 @@ namespace BooksTracker.Models
         }
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<Book> Books { get; set; }
+   
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -47,7 +49,7 @@ namespace BooksTracker.Models
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
 
-                /*     entity.HasData(
+                   entity.HasData(
                 new Author()
                     {
                         ID = -1,
@@ -74,7 +76,7 @@ namespace BooksTracker.Models
                        ID = -6,
                        Name = "Jess Kidd"
                    }
-                );*/
+                );
             });
 
             modelBuilder.Entity<Book>(entity =>
@@ -104,14 +106,14 @@ namespace BooksTracker.Models
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_" + nameof(Book) + "_" + nameof(Author));
 
-                /* entity.HasData(
+                entity.HasData(
                          new Book()
                          {
                              ID = -1,
                              Title = "Key of Light",
-                             PublicationDate = new DateTime(2013/11/01),
-                             CheckedOutDate= new DateTime(2019/12/25),
-                             DueDate = new DateTime(2020/09/09),
+                             PublicationDate = new DateTime(2013,11,01),
+                             CheckedOutDate= new DateTime(2019,12,25),
+                             DueDate = new DateTime(2019,12,25).AddDays(14),
                              ReturnedDate=null,
                              AuthorID = -1
                          },
@@ -119,9 +121,9 @@ namespace BooksTracker.Models
                          {
                              ID = -2,
                              Title = "Once Upon a Rose",
-                             PublicationDate = new DateTime(2001/10/01),
-                             CheckedOutDate = new DateTime(2019/12/25),
-                             DueDate = new DateTime(2020/09/09),
+                             PublicationDate = new DateTime(2001,10,01),
+                             CheckedOutDate = new DateTime(2019,12,25),
+                             DueDate = new DateTime(2019,12,25).AddDays(14),
                              ReturnedDate = null,
                              AuthorID = -2
                          },
@@ -129,9 +131,9 @@ namespace BooksTracker.Models
                          {
                              ID = -3,
                              Title = "Blue Smoke",
-                             PublicationDate = new DateTime(2005/10/01),
-                             CheckedOutDate = new DateTime(2019/12/25),
-                             DueDate = new DateTime(2020/09/09),
+                             PublicationDate = new DateTime(2005,10,01),
+                             CheckedOutDate = new DateTime(2019,12,25),
+                             DueDate = new DateTime(2019,12,25).AddDays(14),
                              ReturnedDate = null,
                              AuthorID = -3
                          },
@@ -139,9 +141,9 @@ namespace BooksTracker.Models
                          {
                              ID = -4,
                              Title = "The Shining",
-                             PublicationDate = new DateTime(1977/11/01),
-                             CheckedOutDate = new DateTime(2020/08/01),
-                             DueDate = new DateTime(2020/08/09),
+                             PublicationDate = new DateTime(1977,11,01),
+                             CheckedOutDate = new DateTime(2020,08,01),
+                             DueDate = new DateTime(2020,08,01).AddDays(14),
                              ReturnedDate = null,
                              AuthorID = -4
                          },
@@ -149,13 +151,13 @@ namespace BooksTracker.Models
                          {
                              ID = -5,
                              Title = "Doctor Sleep",
-                             PublicationDate = new DateTime(2013/09/01),
-                             CheckedOutDate = new DateTime(2020/07/01),
-                             DueDate = new DateTime(2020/09/09),
+                             PublicationDate = new DateTime(2013,09,01),
+                             CheckedOutDate = new DateTime(2020,07,01),
+                             DueDate = new DateTime(2020,07,01).AddDays(14),
                              ReturnedDate = null,
                              AuthorID = -5
                          }
-                     );*/
+                     );
             });
 
 
