@@ -7,6 +7,7 @@ using BooksTracker.Controllers;
 using BooksTracker.Models;
 using Microsoft.VisualBasic;
 
+
 namespace BooksTracker.Controllers
 {
     public class BookController : Controller
@@ -42,7 +43,7 @@ namespace BooksTracker.Controllers
             A public static “Books” property which is a list of “Book” objects.
                 This will be replaced by a proper database on {Day 2 assignment title}.
             */
-        static public List<Book> Books { get; set; } = new List<Book>();
+      /*  static public List<Book> Books { get; set; } = new List<Book>();
 
         public IActionResult Index()
         {
@@ -127,7 +128,7 @@ namespace BooksTracker.Controllers
             Ensures the provided ID is unique in the list.
             Throw an exception if the ID already exists.
             */
-            if (Books.Where(x => x.ID == id).Count() > 0)
+         /*   if (Books.Where(x => x.ID == id).Count() > 0)
             {
                 throw new Exception("That ID already exists.");
             }
@@ -150,7 +151,7 @@ namespace BooksTracker.Controllers
         {
             // Removes the book with the given ID from the “Books” list.
             Books.Remove(Books.Where(x => x.ID == id).Single());
-        }
+        }*/
     }
 }
 

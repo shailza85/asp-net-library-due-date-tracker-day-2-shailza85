@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using BooksTracker.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BooksTracker
 {
@@ -24,6 +26,8 @@ namespace BooksTracker
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            // This is 100% necessary to use the context with scaffolded views. 
+            services.AddDbContext<LibraryContext>(options => options.UseMySql("server=localhost;port=3306;user=root;database=mvc_library"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
