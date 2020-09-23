@@ -31,36 +31,20 @@ namespace BooksTracker.Controllers
         {
             return RedirectToAction("List");
         }
-        public IActionResult Create(string title, string publicationDate, string checkedOutDate,string name)
+        public IActionResult Create(string id, string title, string authorID, string publicationDate, string checkedOutDate)
         {
+            ViewBag.Authors = GetAuthors();
+
             if (Request.Query.Count > 0)
             {
                 try
                 {
-                    if (title != null && publicationDate != null && checkedOutDate != null && name != null)
+                    if (title != null && authorID != null && publicationDate != null && checkedOutDate != null)
                     {
+                        // Get parameters come in as a string, so we have to convert those to the data types required.
+                        Book createdBook = CreateBook(title, int.Parse(authorID), DateTime.Parse(publicationDate), DateTime.Parse(checkedOutDate));
 
-                        Book newBook = new Book()
-                        {
-                            Title = title,
-                            PublicationDate = DateTime.Parse(publicationDate),
-                            CheckedOutDate = DateTime.Parse(checkedOutDate),
-                           ReturnedDate=null,
-                        };
-
-                        Author newAuthor = new Author()
-                        {
-                            Name = name
-                        };
-
-                        using (LibraryContext context = new LibraryContext())
-                        {
-                            context.Books.Add(newBook);
-                            context.Authors.Add(newAuthor);
-                            context.SaveChanges();
-                        }
-                        ViewBag.Success = "Successfully added the book to the list.";
-
+                        ViewBag.Success = $"You have successfully checked out {createdBook.Title} until {createdBook.DueDate}.";
                     }
                     else
                     {
@@ -73,8 +57,9 @@ namespace BooksTracker.Controllers
                     ViewBag.Error = $"Unable to check out book: {e.Message}";
 
                     // Store our data to re-add to the form.
-                   
-                    ViewBag.BookTitle = title;                    
+                    ViewBag.ID = id;
+                    ViewBag.BookTitle = title;
+                    ViewBag.Author = authorID;
                     ViewBag.PublicationDate = publicationDate;
                     ViewBag.CheckedOutDate = checkedOutDate;
                 }
@@ -86,46 +71,51 @@ namespace BooksTracker.Controllers
         }
         public IActionResult List()
         {
-            // Just like with Create() all we have to do is translate our logic from List to Context.
-            using (LibraryContext context = new LibraryContext())
-            {
-                ViewBag.Books = context.Books.ToList();
-            }
+
+            ViewBag.Books = GetBooks();
+
             return View();
         }
 
         public IActionResult Details(string id, string delete, string extend)
         {
             IActionResult result;
-            using (LibraryContext context = new LibraryContext())
+
+
+            // If ID wasn't provided, or if it won't parse to an int, or the ID doesn't exist.
+            if (id == null || !int.TryParse(id, out int temp))
             {
-                // If ID wasn't provided, or if it won't parse to an int, or the ID doesn't exist.
-                if (id == null || !int.TryParse(id, out int temp) || context.Books.Where(x => x.ID == int.Parse(id)).Count() < 1)
+                ViewBag.Error = "No book selected.";
+                result = View();
+            }
+            else
+            {
+                if (delete != null)
                 {
-                    ViewBag.Error = "No book selected.";
-                    result = View();
+                    DeleteBookByID(int.Parse(id));
+                    result = RedirectToAction("List");
                 }
                 else
                 {
-                    if (delete != null)
+                    if (extend != null)
                     {
-                        DeleteBookByID(int.Parse(id));
-                        result = RedirectToAction("List");
+                        ExtendDueDateForBookByID(int.Parse(id));
+                    }
+                    Book target = GetBookByID(int.Parse(id));
+                    if (target == null)
+                    {
+                        ViewBag.Error = "No book selected.";
                     }
                     else
                     {
-                        if (extend != null)
-                        {
-                            ExtendDueDateForBookByID(int.Parse(id));
-                        }
-                        ViewBag.Book = GetBookByID(int.Parse(id));
-                        result = View();
+                        ViewBag.Book = target;
                     }
+                    result = View();
                 }
-                return result;
             }
+            return result;
         }
-        public Book CreateBook(int id, string title, DateTime publicationDate, DateTime checkedOutDate)
+        public Book CreateBook(string title, int authorID, DateTime publicationDate, DateTime checkedOutDate)
         {
             /*
             Accepts the same parameters as the “Book” constructor.
@@ -133,82 +123,79 @@ namespace BooksTracker.Controllers
             Ensures the provided ID is unique in the list.
             Throw an exception if the ID already exists.
             */
-
-            using (LibraryContext context = new LibraryContext())
+            Book newBook = new Book()
             {
-
-                if (context.Books.Where(x => x.ID == id).Count() > 0)
-                {
-                    throw new Exception("That ID already exists.");
-                }
-
-                Book newBook1 = new Book()
-                {
-                    Title = title,
-                    PublicationDate = publicationDate,
-                    CheckedOutDate = checkedOutDate,
-                    ReturnedDate = null,
-                    DueDate = checkedOutDate.AddDays(14),
-                };
-                context.Books.Add(newBook1);
-                return newBook1;
+                Title = title,
+                AuthorID = authorID,
+                PublicationDate = publicationDate,
+                CheckedOutDate = checkedOutDate,
+                DueDate = checkedOutDate.AddDays(14),
+                ReturnedDate = null
+            };
+            using (LibraryContext context = new LibraryContext())
+            {             
+               context.Books.Add(newBook);
+                context.SaveChanges();
+                return newBook;
             }
         }
-        public Author GetBookByID(int id)
+        public Book GetBookByID(int id)
         {
-
-            //Modify “GetBookByID()” to get a specific book from the database.
-
-            //Ensure that the “Author” virtual property is populated before the object is returned(for use on the Details view).
-
-            Author target;
-            List<Book> books;
-
+            Book target;
             using (LibraryContext context = new LibraryContext())
             {
-
-                target = context.Authors.Where(x => x.ID == id).Single();
-                books = context.Books.Where(x => x.ID == target.ID).ToList();
-                target.Books = books;
-                return target;
+                target = context.Books.Where(x => x.ID == id).Single();
+                target.Author = context.Authors.Where(x => x.ID == target.AuthorID).SingleOrDefault();
             }
-
+            return target;
+        }
+        public List<Author> GetAuthors()
+        {
+            List<Author> authors;
+            using (LibraryContext context = new LibraryContext())
+            {
+                authors = context.Authors.ToList();
+                foreach (Author author in authors)
+                {
+                    author.Books = context.Books.Where(x => x.AuthorID == author.ID).ToList();
+                }
+            }
+            return authors;
+        }
+       
+        //Add a “GetBooks()” method to get a list of all books in the database using Entity Framework.
+        public List<Book> GetBooks()
+        {
+            List<Book> books;
+            using (LibraryContext context = new LibraryContext())
+            {
+                books = context.Books.ToList();
+                foreach (Book book in books)
+                {
+                    book.Author = context.Authors.Where(x => x.ID == book.AuthorID).Single();
+                }
+            }
+            return books;
         }
         public void ExtendDueDateForBookByID(int id)
         {
             //Modify “ExtendDueDateForBookByID()” to update a book in the database using Entity Framework.
-           
+
             using (LibraryContext context = new LibraryContext())
             {
-
-                context.Books.Where(x => x.DueDate == DateTime.Now.AddDays(7));
-
+                context.Books.Where(x => x.ID == id).Single().DueDate = DateTime.Now.Date.AddDays(7);
+                context.SaveChanges();
             }
         }
 
-        //Add a “GetBooks()” method to get a list of all books in the database using Entity Framework.
-        public Author GetBooks(int id)
-        {
-            //Ensure that the “Author” virtual property is populated before the list is returned (for use on the List view).
-            Author target;         
-            List<Book> books;
-            using (LibraryContext context = new LibraryContext())
-            {
-                
-                target = context.Authors.Where(x => x.ID == id).Single();
-                books = context.Books.Where(x => x.ID == target.ID).ToList();
-                target.Books = books;
-                return target;
-
-            }
-           
-        }
         public void DeleteBookByID(int id)
         {
             // Modify “DeleteBookByID()” to delete a book from the database using Entity Framework.
+            Book target;
             using (LibraryContext context = new LibraryContext())
             {
-                context.Books.Remove(context.Books.Where(x => x.ID == id).Single());
+                target = context.Books.Where(x => x.ID == id).Single();
+                context.Books.Remove(target);
                 context.SaveChanges();
             }
         }

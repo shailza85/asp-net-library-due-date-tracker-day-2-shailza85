@@ -27,9 +27,13 @@ namespace BooksTracker.Models
         [Column("id", TypeName = "int(10)")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
         [Required]
         [Column(TypeName = "varchar(30)")]
         public string Name { get; set; }
+
+
+        // InverseProperty links the two virtual properties together.
         [InverseProperty(nameof(Models.Book.Author))]
         public virtual ICollection<Book> Books { get; set; }
     }

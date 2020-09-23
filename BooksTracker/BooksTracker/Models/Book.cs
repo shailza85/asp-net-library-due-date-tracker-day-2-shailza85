@@ -28,9 +28,11 @@ namespace BooksTracker.Models
         [Column("ID", TypeName = "int(10)")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
         [Required]
         [Column(TypeName = "varchar(30)")]
         public string Title { get; set; }
+
         [Required]
         [Column(TypeName = "datetime")]
         public DateTime PublicationDate { get; set; }
@@ -40,9 +42,14 @@ namespace BooksTracker.Models
         public DateTime DueDate { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? ReturnedDate { get; set; }
+
         [Column("AuthorID", TypeName = "int(10)")]
         public int AuthorID { get; set; }
+
+        // This attribute specifies which database field is the foreign key. Typically in the child (many side of the 1-many).
         [ForeignKey(nameof(AuthorID))]
+
+        // InverseProperty links the two virtual properties together.
         [InverseProperty(nameof(Models.Author.Books))]
         public virtual Author Author { get; set; }
     }

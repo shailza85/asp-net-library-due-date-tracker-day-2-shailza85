@@ -15,21 +15,20 @@
 }
 
 <form action="/Book/Create" method="get">
-    <div>
-        <label for="id">ID</label>
-        <input type="text" id="id" name="id" value="@(ViewBag.ID)" />
-    </div>
+
     <div>
         <label for="title">Title</label>
         <input type="text" id="title" name="title" value="@(ViewBag.BookTitle)" />
     </div>
     <div>
-        <label for="AuthorIdID">Author</label>
-        <select name="AuthorID" id="AuthorID">
-            @foreach (Author author in ViewBag.Author)
+        @* value="@(ViewBag.Author) *@
+        <label for="authorID">Author</label>
+        <select id="authorID" name="authorID">
+            @foreach (Author author in ViewBag.Authors)
             {
                 <option value="@(author.ID)">@(author.Name)</option>
             }
+
         </select>
     </div>
     <div>
@@ -40,7 +39,7 @@
         <label for="checkedOutDate">Checked Out Date</label>
         <input type="text" id="checkedOutDate" name="checkedOutDate" value="@(ViewBag.CheckedOutDate)" />
     </div>
-    
+
     <button type="submit">Go!</button>
 </form>
 <!-- // Code borowed: https://github.com/TECHCareers-by-Manpower/4.1-MVC/tree/master/MVC_4Point1 -->
